@@ -1,17 +1,52 @@
-import React from 'react';
+import React,{Component} from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import img1 from '../src/imgs/i1.JPG';
+import img2 from '../src/imgs/i2.JPG';
+import img3 from '../src/imgs/i4.JPG';
+import img4 from '../src/imgs/i4.JPG';
+class Component1 extends React.Component {
+	constructor(props) {
+  	super(props)
+    this.backgrounds = [img1,img2,img3,img4]
+    this.state = { backgroundIndex: 0 }
+    
+    this.changeBackground = this.changeBackground.bind(this)
+  }
+  
+  componentDidMount () {
+    this.timeout = setTimeout(
+      this.changeBackground,
+      this.props.animDuration * 100
+    )
+  }
+  
+  componentWillUnmount() {
+  	if (this.timeout) clearTimeout(this.timeout)
+  }
+
+  changeBackground () {
+    this.setState(function ({ backgroundIndex }) {
+      const nextBackgroundIndex = ++backgroundIndex % this.backgrounds.length
+
+      return { backgroundIndex: nextBackgroundIndex }
+    }, function () {
+      this.timeout = setTimeout(
+        this.changeBackground,
+        this.props.animDuration * 100
+      )
+    })
+  }
+
+  render () {
+    return (
+      <div>
+        <img src={ this.backgrounds[this.state.backgroundIndex] } alt="images" />
+      </div>
+    )
+  }
+}
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <Component1 animDuration={1} />,
+  document.getElementById('ani')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
